@@ -6,6 +6,7 @@ function ShimmerBlock({ className, delay = 0, style }: { className: string; dela
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay, duration: 0.3 }}
+      style={style}
       className={`skeleton-shimmer rounded-lg ${className}`}
     />
   );
