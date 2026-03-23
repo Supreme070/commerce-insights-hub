@@ -25,7 +25,8 @@ const CustomTooltip = React.forwardRef<HTMLDivElement, any>(({ active, payload, 
     );
   }
   return null;
-};
+});
+CustomTooltip.displayName = "CustomTooltip";
 
 export function RevenueTrendChart() {
   return (
