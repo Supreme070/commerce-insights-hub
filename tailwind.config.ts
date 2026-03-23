@@ -57,28 +57,34 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        google: {
+          blue: "hsl(var(--google-blue))",
+          red: "hsl(var(--google-red))",
+          yellow: "hsl(var(--google-yellow))",
+          green: "hsl(var(--google-green))",
+        },
+        surface: "hsl(var(--surface))",
+        divider: "hsl(var(--divider))",
+        "text-primary": "hsl(var(--text-primary))",
+        "text-secondary": "hsl(var(--text-secondary))",
+        "text-muted": "hsl(var(--text-muted))",
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      spacing: {
+        '18': '4.5rem',
+      },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
         },
       },
       animation: {
