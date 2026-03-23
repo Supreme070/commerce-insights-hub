@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Download, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { motion } from "framer-motion";
 import type { DateRange } from "react-day-picker";
 
 const periods = [
@@ -40,25 +41,41 @@ export function DashboardHeader({ onPeriodChange, onDateRangeChange }: Dashboard
     onDateRangeChange?.(range);
   };
 
+  const now = new Date();
+  const greeting = now.getHours() < 12 ? "Good morning" : now.getHours() < 17 ? "Good afternoon" : "Good evening";
+
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <motion.div
+      initial={{ opacity: 0, y: -8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+      className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+    >
       <div>
-        <h1 className="font-google text-xl font-semibold text-foreground">Ecommerce Analytics</h1>
-        <p className="text-sm text-text-secondary mt-0.5">Monitor your store performance</p>
+        <h1 className="font-google text-2xl font-semibold text-foreground tracking-tight">
+          Ecommerce Analytics
+        </h1>
+        <p className="text-sm text-text-secondary mt-1 flex items-center gap-2">
+          {greeting} — here's your store overview
+          <span className="inline-flex items-center gap-1 text-xs text-text-muted">
+            <span className="w-1.5 h-1.5 rounded-full bg-google-green pulse-dot" />
+            Live
+          </span>
+        </p>
       </div>
 
       <div className="flex items-center gap-2">
         {/* Period selector pills */}
-        <div className="flex items-center bg-surface rounded-lg p-0.5 gap-0.5">
+        <div className="flex items-center bg-surface rounded-lg p-1 gap-0.5 border border-[hsl(var(--card-border))]">
           {periods.map((p) => (
             <button
               key={p.label}
               onClick={() => handlePeriodClick(p.days)}
               className={cn(
-                "px-3 py-1.5 text-xs font-medium rounded-md transition-all",
+                "relative px-3.5 py-1.5 text-xs font-medium rounded-md transition-all duration-200",
                 activePeriod === p.days
                   ? "bg-card text-foreground shadow-level-1"
-                  : "text-text-secondary hover:text-foreground"
+                  : "text-text-secondary hover:text-foreground hover:bg-card/50"
               )}
             >
               {p.label}
@@ -73,7 +90,7 @@ export function DashboardHeader({ onPeriodChange, onDateRangeChange }: Dashboard
               variant="outline"
               size="sm"
               className={cn(
-                "h-8 px-3 text-xs font-normal border-border bg-card",
+                "h-8 px-3 text-xs font-normal border-[hsl(var(--card-border))] bg-card hover:shadow-level-1 transition-all duration-200",
                 !dateRange && "text-muted-foreground"
               )}
             >
@@ -91,7 +108,7 @@ export function DashboardHeader({ onPeriodChange, onDateRangeChange }: Dashboard
               )}
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="end">
+          <PopoverContent className="w-auto p-0 shadow-level-3 border-[hsl(var(--card-border))]" align="end">
             <Calendar
               mode="range"
               selected={dateRange}
@@ -102,7 +119,23 @@ export function DashboardHeader({ onPeriodChange, onDateRangeChange }: Dashboard
             />
           </PopoverContent>
         </Popover>
+
+        {/* Action buttons */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 text-text-muted hover:text-foreground"
+        >
+          <RefreshCw className="h-3.5 w-3.5" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 text-text-muted hover:text-foreground"
+        >
+          <Download className="h-3.5 w-3.5" />
+        </Button>
       </div>
-    </div>
+    </motion.div>
   );
 }
