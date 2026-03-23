@@ -11,7 +11,9 @@ const data = Array.from({ length: 30 }, (_, i) => {
   };
 });
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+import React from "react";
+
+const CustomTooltip = React.forwardRef<HTMLDivElement, any>(({ active, payload, label }, ref) => {
   if (active && payload?.length) {
     return (
       <div className="bg-card rounded-lg p-3 shadow-level-3 border border-border">
@@ -23,7 +25,8 @@ const CustomTooltip = ({ active, payload, label }: any) => {
     );
   }
   return null;
-};
+});
+CustomTooltip.displayName = "CustomTooltip";
 
 export function RevenueTrendChart() {
   return (
