@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-function ShimmerBlock({ className, delay = 0 }: { className: string; delay?: number }) {
+function ShimmerBlock({ className, delay = 0, style }: { className: string; delay?: number; style?: React.CSSProperties }) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
