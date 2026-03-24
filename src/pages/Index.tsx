@@ -34,28 +34,40 @@ const Index = () => {
           ) : (
             <motion.div
               key="dashboard"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: {},
+                visible: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } },
+              }}
               className="space-y-6"
             >
-              <DashboardHeader />
-              <KpiCards />
-
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-                <RevenueTrendChart />
-                <RealTimeVisitors />
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                <TopProducts />
-                <TopCustomers />
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                <AcquisitionFunnel />
-                <CustomerSegments />
-              </div>
+              {[
+                <DashboardHeader key="header" />,
+                <KpiCards key="kpis" />,
+                <div key="charts" className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                  <RevenueTrendChart />
+                  <RealTimeVisitors />
+                </div>,
+                <div key="lists" className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                  <TopProducts />
+                  <TopCustomers />
+                </div>,
+                <div key="bottom" className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                  <AcquisitionFunnel />
+                  <CustomerSegments />
+                </div>,
+              ].map((child, i) => (
+                <motion.div
+                  key={i}
+                  variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] } },
+                  }}
+                >
+                  {child}
+                </motion.div>
+              ))}
             </motion.div>
           )}
         </AnimatePresence>
