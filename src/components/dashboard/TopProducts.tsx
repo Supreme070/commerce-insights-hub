@@ -1,17 +1,27 @@
 import { motion } from "framer-motion";
 import { TrendingUp, TrendingDown, Package } from "lucide-react";
 
-const products = [
-  { name: "Organic Shea Butter 500ml", revenue: 2340000, units: 312, growth: 24.5 },
-  { name: "African Black Soap Bundle", revenue: 1890000, units: 456, growth: 18.2 },
-  { name: "Moringa Oil Cold-Pressed", revenue: 1450000, units: 198, growth: 12.8 },
-  { name: "Cocoa Butter Body Cream", revenue: 980000, units: 267, growth: -3.2 },
-  { name: "Hibiscus Hair Growth Oil", revenue: 870000, units: 189, growth: 8.7 },
-];
+interface ProductData {
+  name: string;
+  revenue: number;
+  units: number;
+  growth: number;
+}
 
-const maxRevenue = Math.max(...products.map((p) => p.revenue));
+interface TopProductsProps {
+  data?: ProductData[];
+}
 
-export function TopProducts() {
+export function TopProducts({ data }: TopProductsProps) {
+  const products = data ?? [
+    { name: "Organic Shea Butter 500ml", revenue: 2340000, units: 312, growth: 24.5 },
+    { name: "African Black Soap Bundle", revenue: 1890000, units: 456, growth: 18.2 },
+    { name: "Moringa Oil Cold-Pressed", revenue: 1450000, units: 198, growth: 12.8 },
+    { name: "Cocoa Butter Body Cream", revenue: 980000, units: 267, growth: -3.2 },
+    { name: "Hibiscus Hair Growth Oil", revenue: 870000, units: 189, growth: 8.7 },
+  ];
+  const maxRevenue = Math.max(...products.map((p) => p.revenue));
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
@@ -51,7 +61,6 @@ export function TopProducts() {
                   <span className="text-xs font-google font-semibold text-text-muted w-5">{i + 1}</span>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-foreground truncate group-hover:text-google-blue transition-colors">{p.name}</p>
-                    {/* Revenue bar */}
                     <div className="w-full h-1 bg-[hsl(var(--divider))] rounded-full mt-1.5 overflow-hidden">
                       <motion.div
                         initial={{ width: 0 }}
@@ -63,13 +72,9 @@ export function TopProducts() {
                   </div>
                 </div>
               </div>
-              <span className="text-sm font-google font-medium text-foreground text-right tabular-nums">
-                ₦{p.revenue.toLocaleString()}
-              </span>
+              <span className="text-sm font-google font-medium text-foreground text-right tabular-nums">₦{p.revenue.toLocaleString()}</span>
               <span className="text-xs text-text-muted text-right tabular-nums">{p.units}</span>
-              <div className={`flex items-center justify-end gap-0.5 w-16 text-xs font-medium ${
-                isPositive ? "text-google-green" : "text-google-red"
-              }`}>
+              <div className={`flex items-center justify-end gap-0.5 w-16 text-xs font-medium ${isPositive ? "text-google-green" : "text-google-red"}`}>
                 {isPositive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                 {isPositive ? "+" : ""}{p.growth}%
               </div>

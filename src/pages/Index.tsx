@@ -9,14 +9,29 @@ import { TopProducts } from "@/components/dashboard/TopProducts";
 import { TopCustomers } from "@/components/dashboard/TopCustomers";
 import { AcquisitionFunnel } from "@/components/dashboard/AcquisitionFunnel";
 import { CustomerSegments } from "@/components/dashboard/CustomerSegments";
+import { EmptyState } from "@/components/dashboard/EmptyState";
+import { useDashboardData, type Period } from "@/hooks/useDashboardData";
 
 const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [period, setPeriod] = useState<Period>(30);
+  const [hasStore, setHasStore] = useState(true);
+  const dashData = useDashboardData(period);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1600);
     return () => clearTimeout(timer);
   }, []);
+
+  if (!hasStore && !isLoading) {
+    return (
+      <div className="min-h-screen bg-surface">
+        <div className="max-w-[1440px] mx-auto px-6 lg:px-10 py-6 lg:py-8">
+          <EmptyState onConnect={() => setHasStore(true)} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-surface">
@@ -43,19 +58,19 @@ const Index = () => {
               className="space-y-6"
             >
               {[
-                <DashboardHeader key="header" />,
-                <KpiCards key="kpis" />,
+                <DashboardHeader key="header" onPeriodChange={(days) => setPeriod(days as Period)} />,
+                <KpiCards key="kpis" data={dashData.kpis} />,
                 <div key="charts" className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-                  <RevenueTrendChart />
-                  <RealTimeVisitors />
+                  <RevenueTrendChart data={dashData.revenueChart} period={period} />
+                  <RealTimeVisitors data={dashData.visitors} />
                 </div>,
                 <div key="lists" className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                  <TopProducts />
+                  <TopProducts data={dashData.products} />
                   <TopCustomers />
                 </div>,
                 <div key="bottom" className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                  <AcquisitionFunnel />
-                  <CustomerSegments />
+                  <AcquisitionFunnel data={dashData.funnel} />
+                  <CustomerSegments segmentData={dashData.segments} stats={dashData.segmentStats} />
                 </div>,
               ].map((child, i) => (
                 <motion.div
