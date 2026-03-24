@@ -2,23 +2,34 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { motion } from "framer-motion";
 import { AlertTriangle } from "lucide-react";
 
-const segments = [
-  { name: "VIP", value: 12, count: 102, color: "hsl(137, 52%, 43%)", dotClass: "bg-google-green" },
-  { name: "High Value", value: 23, count: 195, color: "hsl(214, 82%, 51%)", dotClass: "bg-google-blue" },
-  { name: "Medium", value: 35, count: 296, color: "hsl(43, 97%, 50%)", dotClass: "bg-google-yellow" },
-  { name: "Low Value", value: 18, count: 152, color: "hsl(210, 5%, 63%)", dotClass: "bg-text-muted" },
-  { name: "At Risk", value: 12, count: 102, color: "hsl(4, 81%, 56%)", dotClass: "bg-google-red" },
+const segmentConfigs = [
+  { name: "VIP", color: "hsl(137, 52%, 43%)", dotClass: "bg-google-green" },
+  { name: "High Value", color: "hsl(214, 82%, 51%)", dotClass: "bg-google-blue" },
+  { name: "Medium", color: "hsl(43, 97%, 50%)", dotClass: "bg-google-yellow" },
+  { name: "Low Value", color: "hsl(210, 5%, 63%)", dotClass: "bg-text-muted" },
+  { name: "At Risk", color: "hsl(4, 81%, 56%)", dotClass: "bg-google-red" },
 ];
 
-const totalCustomers = segments.reduce((sum, s) => sum + s.count, 0);
+interface CustomerSegmentsProps {
+  segmentData?: { count: number; value: number }[];
+  stats?: { clv: string; retention: string; atRisk: number };
+}
 
-const stats = [
-  { label: "Avg CLV", value: "₦89,400", highlight: false },
-  { label: "Retention", value: "74.2%", highlight: false },
-  { label: "At-Risk HV", value: "18", highlight: true },
-];
+export function CustomerSegments({ segmentData, stats }: CustomerSegmentsProps) {
+  const segments = segmentConfigs.map((s, i) => ({
+    ...s,
+    count: segmentData?.[i]?.count ?? [102, 195, 296, 152, 102][i],
+    value: segmentData?.[i]?.value ?? [12, 23, 35, 18, 12][i],
+  }));
 
-export function CustomerSegments() {
+  const totalCustomers = segments.reduce((sum, s) => sum + s.count, 0);
+
+  const displayStats = [
+    { label: "Avg CLV", value: stats?.clv ?? "₦89,400", highlight: false },
+    { label: "Retention", value: stats?.retention ?? "74.2%", highlight: false },
+    { label: "At-Risk HV", value: String(stats?.atRisk ?? 18), highlight: true },
+  ];
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
@@ -33,21 +44,11 @@ export function CustomerSegments() {
         </div>
       </div>
 
-      {/* Donut + Legend side by side */}
       <div className="flex items-center gap-6 mb-5">
         <div className="relative w-[160px] h-[160px] flex-shrink-0">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
-              <Pie
-                data={segments}
-                cx="50%"
-                cy="50%"
-                innerRadius={50}
-                outerRadius={75}
-                dataKey="value"
-                strokeWidth={2}
-                stroke="white"
-              >
+              <Pie data={segments} cx="50%" cy="50%" innerRadius={50} outerRadius={75} dataKey="value" strokeWidth={2} stroke="white">
                 {segments.map((s) => (
                   <Cell key={s.name} fill={s.color} />
                 ))}
@@ -60,7 +61,6 @@ export function CustomerSegments() {
           </div>
         </div>
 
-        {/* Legend */}
         <div className="flex-1 space-y-2.5">
           {segments.map((s, i) => (
             <motion.div
@@ -79,16 +79,13 @@ export function CustomerSegments() {
         </div>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-3 gap-3 pt-4 border-t border-[hsl(var(--divider))]">
-        {stats.map((s) => (
+        {displayStats.map((s) => (
           <div key={s.label} className="bg-surface rounded-lg p-3 text-center">
             <p className="text-[10px] text-text-muted uppercase tracking-wider mb-1">{s.label}</p>
             <div className="flex items-center justify-center gap-1">
               {s.highlight && <AlertTriangle className="w-3 h-3 text-google-red" />}
-              <p className={`text-sm font-google font-semibold ${s.highlight ? "text-google-red" : "text-foreground"}`}>
-                {s.value}
-              </p>
+              <p className={`text-sm font-google font-semibold ${s.highlight ? "text-google-red" : "text-foreground"}`}>{s.value}</p>
             </div>
           </div>
         ))}
